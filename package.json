@@ -1,8 +1,9 @@
 {
-  "name": "form-api",
+  "name": "formapi",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/server/index.js",
+  "browser": "./src/client/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,11 +11,9 @@
   "author": "Popov Gennadiy <commerce@westtrade.tk> (http://westtrade.tk/)",
   "license": "MIT",
   "devDependencies": {
-    "webpack": "^2.4.1"
-  },
-  "dependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "json-loader": "^0.5.4"
+    "webpack": "^2.4.1",
+	"babel-core": "^6.24.1",
+	"babel-loader": "^7.0.0",
+	"json-loader": "^0.5.4"
   }
 }
