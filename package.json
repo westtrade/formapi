@@ -8,5 +8,13 @@
   },
   "keywords": [],
   "author": "Popov Gennadiy <commerce@westtrade.tk> (http://westtrade.tk/)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^2.4.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "json-loader": "^0.5.4"
+  }
 }
