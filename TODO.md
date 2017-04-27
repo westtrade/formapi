@@ -14,13 +14,13 @@
 
 const form = require('formapi');
 
-form.settings = {
+form.settings({
 	constrains : [
 		'path1',
 		'path2',
 		'path3',
 	], //path for autloading constraint rules
-} // Global settings
+}) // Global settings
 
 
 
@@ -34,6 +34,8 @@ login.validate() // Return array of field errors or null
 login.fields() // Maybe with files data ?
 login.toJSON()
 login.toString()
+
+login.submit() // can override sumit params
 
 // Client side api
 
