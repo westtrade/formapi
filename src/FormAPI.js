@@ -1,11 +1,19 @@
-const DEFAULT_SETTINGS = require('./defaults');
+import	DEFAULT_SETTINGS from './defaults';
+import assert from 'assert';
+
 let global_settings = Object.assign({}, DEFAULT_SETTINGS);
 
-class FormAPI {
+export default class FormAPI {
+	/**
+	 * FormAPI constructor
+	 * @type {String} Form id
+	 * @type {Object} Form options
+	 */
 	constructor(id, options = {}) {
+		assert(id && typeof id === 'string' && id.length, 'Form id must be a string');
 		this.properties = {
 			id, options,
-		}
+		};
 	}
 
 	static settings(settings) {
@@ -44,11 +52,11 @@ class FormAPI {
 		}
 	}
 
-	fields(data = {}) {
+	fields(data = null) {
+
+
 		Object.entries(data).forEach(([key, value]) => {
 			this.field(key, value);
 		});
 	}
 }
-
-module.exports = FormAPI;
