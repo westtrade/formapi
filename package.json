@@ -2,8 +2,8 @@
   "name": "formapi",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/server/index.js",
-  "browser": "./src/client/index.js",
+  "main": "./src/ServerFormAPI.js",
+  "browser": "./src/ClientFormAPI.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
