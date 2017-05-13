@@ -4,6 +4,7 @@
  * @license MIT
  */
 
-module.exports = {
-
+export default {
+	selectOnFocus: false,
+	validateOnInput: false,
 };

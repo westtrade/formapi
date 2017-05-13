@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/colors/1.0/colors.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+	<style>
+		body {
+			font-family: sans-serif;;
+		}
+		input, button {
+			border: none;
+			line-height: 45px;
+			padding: 2px 25px;
+			border-radius: 5px;
+		}
+		button {
+			cursor: pointer;
+		}
+		.region {
+			padding: 50px;
+		}
+
+		.tabs .item {
+			display: inline-block;
+			border-radius: 4px 4px 0 0;
+			padding: 10px 25px;
+			margin: 10px 10px 0;
+			cursor: pointer;
+		}
+	</style>
+	<title>Form API Example</title>
+</head>
+<body class="bg-white">
+	<div class="tabs">
+		<span class="item bg-aqua black">
+			Login form
+		</span>
+		<form id="login-form" class="bg-aqua region" method="post" action="/verify_user">
+			<div class="messages"></div>
+			<input class="bg-white navy" type="text" name="login" placeholder="Login">
+			<input class="bg-white navy" type="password" name="password" placeholder="Password">
+			<button class="bg-black aqua" form="login-form">
+				<strong>SEND</strong>
+			</button>
+		</form>
+	</div>
+
+	<script src="/public/client.formapi.js"></script>
+	<script>
+		var ws = (function initWebsocketClient() {
+
+			var client = new WebSocket('ws://' + window.location.host + '/');
+			client.onopen = function wsOpenHandler(event) {
+				console.log('Соединение установлено');
+			}
+
+			client.onclose = function wsCloseHandler(event) {
+				event.wasClean
+					? console.log('Соединение закрыто чисто')
+					: console.log('Обрыв соединения');
+
+				console.log('Код: ' + event.code + ' причина: ' + event.reason);
+			}
+
+			client.onmessage = function wsMessageHandler(event) {
+				console.log('Получены данные' + event.data);
+			}
+
+			client.onerror = function wsErrorHandler(error) {
+				console.log('Ошибка ' + error.message);
+			}
+
+
+			return {
+				client: client,
+			}
+
+		})();
+	</script>
+	<script>
+
+		var form = new FormAPI('login-form', {
+			validation: {
+				login: {
+					presence: true,
+					length: {
+						minimum: 4,
+					},
+				}
+			}
+		});
+
+		// form.on('error', function (errors) {
+		// 	console.log('Errors');
+		// })
+
+		var messages = form.element.getElementsByClassName('messages')[0];
+		form.focus().on('valid', function (name, status, reason, field) {
+			field.classList.toggle('has-error', !status);
+			form.classList.toggle('has-error', !status);
+			messages.innerHTML = status ? '' : form.errorList.join(', ');
+		});
+
+	</script>
+</body>
+</html>

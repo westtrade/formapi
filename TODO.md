@@ -12,9 +12,9 @@
 
 ```js
 
-const form = require('formapi');
+const FormAPI  = require('formapi');
 
-form.settings({
+FormAPI.settings({
 	constrains : [
 		'path1',
 		'path2',
@@ -25,7 +25,9 @@ form.settings({
 
 
 const login = form('login', {
-
+		validation: {
+			
+		}
 	})
 	.parse(request);
 
