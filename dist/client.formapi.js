@@ -3599,7 +3599,7 @@ var ClientFormAPI = function (_FormAPI) {
 				var errors = _this3.errors;
 
 				var rule = _this3.getRule(name);
-				return [element, name, errors[name], rule];
+				return [element, name, errors ? errors[name] : null, rule];
 			});
 		}
 	}]);

@@ -130,7 +130,7 @@ export default class ClientFormAPI extends FormAPI {
 			return [
 				element,
 				name,
-				errors[name],
+				errors ? errors[name] : null,
 				rule,
 			]
 		})
