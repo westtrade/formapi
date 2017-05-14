@@ -188,8 +188,8 @@ export default class FormAPI extends EventEmmiter2 {
 
 	get errorList() {
 		return Object.values(this.errors || {}).reduce((result, item) => {
-			if (Array.isArray(items)) {
-				return result.concat(items);
+			if (Array.isArray(item)) {
+				return result.concat(item);
 			}
 			result.push(item);
 			return result;
