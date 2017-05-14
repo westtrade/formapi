@@ -3591,12 +3591,14 @@ var ClientFormAPI = function (_FormAPI) {
 	}, {
 		key: 'elements',
 		get: function get() {
+			var _this3 = this;
+
 			var elements = (0, _from2.default)(this.form.elements);
 			return elements.map(function (element) {
 				var name = element.name;
-				var errors = this.errors;
+				var errors = _this3.errors;
 
-				var rule = this.getRule(name);
+				var rule = _this3.getRule(name);
 				return [element, name, errors[name], rule];
 			});
 		}

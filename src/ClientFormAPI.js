@@ -123,7 +123,7 @@ export default class ClientFormAPI extends FormAPI {
 
 	get elements() {
 		const elements = Array.from(this.form.elements);
-		return elements.map(function (element) {
+		return elements.map((element) => {
 			const {name} = element;
 			const {errors} = this;
 			const rule = this.getRule(name);
