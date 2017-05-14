@@ -3563,6 +3563,14 @@ var ClientFormAPI = function (_FormAPI) {
 			return this;
 		}
 	}, {
+		key: 'reset',
+		value: function reset() {
+			this.errrors = null;
+			this.form.reset();
+			this[_FormAPI2.privates].pristine = true;
+			this.emit('reset');
+		}
+	}, {
 		key: 'isPristine',
 		get: function get() {
 			return this[_FormAPI2.privates].pristine;
