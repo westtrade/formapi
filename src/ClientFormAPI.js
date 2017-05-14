@@ -113,10 +113,6 @@ export default class ClientFormAPI extends FormAPI {
 		//TODO Get validation rules from elements
 	}
 
-	get classList() {
-		return this.form.classList;
-	}
-
 	get element() {
 		return this.form;
 	}
@@ -180,6 +176,7 @@ export default class ClientFormAPI extends FormAPI {
 		this[privates].errors = null;
 		this.form.reset();
 		this[privates].pristine = true;
+		this.resetCustomErrors();
 		this.emit('reset');
 	}
 }

@@ -33,6 +33,7 @@ export default class FormAPI extends EventEmmiter2 {
 		this[privates] = {
 			errors: null,
 			pristine: true,
+			customErrors: null,
 			// initial: this.data,
 		};
 
@@ -75,7 +76,38 @@ export default class FormAPI extends EventEmmiter2 {
 	}
 
 	get errors() {
+		const {errors, customErrors} = this[privates];
+
 		return this[privates].errors;
+	}
+
+	get customErrors() {
+		return this[privates].customErrors;
+	}
+
+	setCustomErrors(errors) {
+		if (errors) {
+			const name = '#custom';
+			this[privates].customErrors = {
+				[name] : errors,
+			};
+
+			this.emit(`error.${name}`, errors, null);
+			this.emit(`error`, errors, null, this.form);
+
+			this.emit(`valid.${name}`, false, errors, null);
+			this.emit('valid', name, false, errors, this.form);
+			return
+		}
+
+		this.resetCustomErrors();
+	}
+
+	resetCustomErrors() {
+		const name = '#custom';
+		this[privates].customErrors = null;
+		this.emit(`valid.${name}`, true, null, null);
+		this.emit('valid', name, true, null, null);
 	}
 
 	get hasErrors() {
@@ -120,9 +152,9 @@ export default class FormAPI extends EventEmmiter2 {
 
 		this[privates].errors = errors;
 
-		if (errors) {
-			this.emit('errors', errors);
-		}
+		// if (errors) {
+		// 	this.emit('error', errors);
+		// }
 
 		return !this[privates].errors;
 	}
@@ -160,7 +192,7 @@ export default class FormAPI extends EventEmmiter2 {
 			this.emit(`error`, fieldsErrors[name], null, this.form);
 
 			this.emit(`valid.${name}`, false, fieldsErrors[name], this.field(name));
-			this.emit('valid', name, false, fieldsErrors[name], this.field(name));
+			this.emit('valid', name, false, fieldsErrors[name], this.form);
 		} else {
 			this.emit(`valid.${name}`, true, null, this.field(name));
 			this.emit('valid', name, true, null, this.field(name));
