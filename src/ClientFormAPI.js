@@ -108,7 +108,7 @@ export default class ClientFormAPI extends FormAPI {
 		return validator.collectFormValues(this.form);
 		// return getFormData(this.form);
 	}
-	
+
 	validationFromElements() {
 		//TODO Get validation rules from elements
 	}
@@ -119,6 +119,21 @@ export default class ClientFormAPI extends FormAPI {
 
 	get element() {
 		return this.form;
+	}
+
+	get elements() {
+		const elements = Array.from(this.form.elements);
+		return elements.map(function (element) {
+			const {name} = element;
+			const {errors} = this;
+			const rule = this.getRule(name);
+			return [
+				element,
+				name,
+				errors[name],
+				rule,
+			]
+		})
 	}
 
 	field(fieldName, value, eventType) {

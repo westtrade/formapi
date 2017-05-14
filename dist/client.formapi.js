@@ -3272,6 +3272,10 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _from = __webpack_require__(147);
+
+var _from2 = _interopRequireDefault(_from);
+
 var _regenerator = __webpack_require__(51);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -3583,6 +3587,18 @@ var ClientFormAPI = function (_FormAPI) {
 		key: 'element',
 		get: function get() {
 			return this.form;
+		}
+	}, {
+		key: 'elements',
+		get: function get() {
+			var elements = (0, _from2.default)(this.form.elements);
+			return elements.map(function (element) {
+				var name = element.name;
+				var errors = this.errors;
+
+				var rule = this.getRule(name);
+				return [element, name, errors[name], rule];
+			});
 		}
 	}]);
 	return ClientFormAPI;
@@ -8162,6 +8178,78 @@ module.exports = function(module) {
 	}
 	return module;
 };
+
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(148), __esModule: true };
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(23);
+__webpack_require__(150);
+module.exports = __webpack_require__(0).Array.from;
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $defineProperty = __webpack_require__(6)
+  , createDesc      = __webpack_require__(19);
+
+module.exports = function(object, index, value){
+  if(index in object)$defineProperty.f(object, index, createDesc(0, value));
+  else object[index] = value;
+};
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var ctx            = __webpack_require__(15)
+  , $export        = __webpack_require__(3)
+  , toObject       = __webpack_require__(21)
+  , call           = __webpack_require__(106)
+  , isArrayIter    = __webpack_require__(104)
+  , toLength       = __webpack_require__(64)
+  , createProperty = __webpack_require__(149)
+  , getIterFn      = __webpack_require__(65);
+
+$export($export.S + $export.F * !__webpack_require__(108)(function(iter){ Array.from(iter); }), 'Array', {
+  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+    var O       = toObject(arrayLike)
+      , C       = typeof this == 'function' ? this : Array
+      , aLen    = arguments.length
+      , mapfn   = aLen > 1 ? arguments[1] : undefined
+      , mapping = mapfn !== undefined
+      , index   = 0
+      , iterFn  = getIterFn(O)
+      , length, result, step, iterator;
+    if(mapping)mapfn = ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
+    // if object isn't iterable or it's array with default iterator - use simple case
+    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+        createProperty(result, index, mapping ? call(iterator, mapfn, [step.value, index], true) : step.value);
+      }
+    } else {
+      length = toLength(O.length);
+      for(result = new C(length); length > index; index++){
+        createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
+      }
+    }
+    result.length = index;
+    return result;
+  }
+});
 
 
 /***/ })
