@@ -78,6 +78,14 @@ export default class FormAPI extends EventEmmiter2 {
 		return this[privates].errors;
 	}
 
+	get hasErrors() {
+		return !!this.errors;
+	}
+
+	get isValid() {
+		return !this.errors;
+	}
+
 	get data() {
 
 	}
@@ -179,7 +187,13 @@ export default class FormAPI extends EventEmmiter2 {
 	}
 
 	get errorList() {
-		return Object.values(this.errors);
+		return Object.values(this.errors || {}).reduce((result, item) => {
+			if (Array.isArray(items)) {
+				return result.concat(items);
+			}
+			result.push(item);
+			return result;
+		}, []);
 	}
 
 	toString() {

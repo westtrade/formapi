@@ -108,6 +108,10 @@ export default class ClientFormAPI extends FormAPI {
 		return validator.collectFormValues(this.form);
 		// return getFormData(this.form);
 	}
+	
+	validationFromElements() {
+		//TODO Get validation rules from elements
+	}
 
 	get classList() {
 		return this.form.classList;

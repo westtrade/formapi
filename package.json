@@ -8,7 +8,9 @@
     "develop": "concurrently 'webpack --watch' 'nodemon examples/server'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+	  "form"
+  ],
   "author": "Popov Gennadiy <commerce@westtrade.tk> (http://westtrade.tk/)",
   "license": "MIT",
   "devDependencies": {

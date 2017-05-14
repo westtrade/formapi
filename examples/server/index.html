@@ -4,8 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<!-- Цвета -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/colors/1.0/colors.min.css">
+	<!-- Сброс стилей -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+	<script src="https://rawgit.com/angular/bower-angular/master/angular.min.js"></script>
 	<style>
 		body {
 			font-family: sans-serif;;
@@ -15,12 +18,25 @@
 			line-height: 45px;
 			padding: 2px 25px;
 			border-radius: 5px;
+			border: 1px solid #000;
+		}
+		.messages {
+			margin: 20px 0;
+			height: 20px;
+			line-height: 20px;
+		}
+		.has-error .messages {
+			color: red;
 		}
 		button {
 			cursor: pointer;
 		}
 		.region {
 			padding: 50px;
+		}
+		.has-error {
+			border-color: red;
+			box-shadow: 0 0 13px rgba(255, 0 ,0, 1);
 		}
 
 		.tabs .item {
@@ -38,6 +54,7 @@
 		<span class="item bg-aqua black">
 			Login form
 		</span>
+
 		<form id="login-form" class="bg-aqua region" method="post" action="/verify_user">
 			<div class="messages"></div>
 			<input class="bg-white navy" type="text" name="login" placeholder="Login">
@@ -46,10 +63,28 @@
 				<strong>SEND</strong>
 			</button>
 		</form>
+
+		<div  ng-app="formApp">
+			<form ng-controller="formController as $ctrl" id="login-form-another" ng-class="['bg-aqua region', {'has-error': $ctrl.form.hasErrors}]" method="post" action="/verify_user">
+				<div class="messages">
+					<span ng-repeat="(fieldName, error) in $ctrl.form.errors">{{ error.join() }}</span>
+				</div>
+				<input class="bg-white navy" type="text" name="login" placeholder="Login">
+				<input class="bg-white navy" type="password" name="password" placeholder="Password">
+				<button class="bg-black aqua">
+					<strong>SEND</strong>
+				</button>
+			</form>
+		</div>
+
 	</div>
 
+	<button class="bg-black aqua" form="login-form-another">
+		<strong>SEND</strong>
+	</button>
+
 	<script src="/public/client.formapi.js"></script>
-	<script>
+	<!-- <script>
 		var ws = (function initWebsocketClient() {
 
 			var client = new WebSocket('ws://' + window.location.host + '/');
@@ -79,30 +114,73 @@
 			}
 
 		})();
-	</script>
+	</script> -->
 	<script>
-
-		var form = new FormAPI('login-form', {
-			validation: {
-				login: {
-					presence: true,
-					length: {
-						minimum: 4,
+		var validationRules = {
+			login: {
+				presence: {
+					message: function () {
+						return 'Кастомное сообщение об ошибке';
 					},
-				}
+				},
+				length: {
+					minimum: 4,
+					message: ' должно быть не меньше 4 символов',
+				},
 			}
-		});
+		};
 
-		// form.on('error', function (errors) {
-		// 	console.log('Errors');
-		// })
+		(function () {
+			var loginForm = new FormAPI('login-form', {
+				validation: validationRules
+			});
 
-		var messages = form.element.getElementsByClassName('messages')[0];
-		form.focus().on('valid', function (name, status, reason, field) {
-			field.classList.toggle('has-error', !status);
-			form.classList.toggle('has-error', !status);
-			messages.innerHTML = status ? '' : form.errorList.join(', ');
-		});
+			var messages = loginForm.element.getElementsByClassName('messages')[0];
+
+			loginForm
+				.on('valid', function (name, status, reason, field) {
+					field.classList.toggle('has-error', !status);
+					loginForm.classList.toggle('has-error', loginForm.hasErrorsi);
+					messages.innerHTML = loginForm.hasErrors ? loginForm.errorList.join(', ') : '';
+
+					console.log(loginForm.errors, loginForm.errorList.join());
+				})
+				.on('submit', () => {
+
+					console.log('Данные формы', loginForm.data);
+					console.log('Преобразование в JSON', JSON.stringify(loginForm));
+					console.log('Запрос', location.origin + '/?' + loginForm);
+
+					if (loginForm.isValid) {
+						console.log('Отправка куда либо');
+					} else {
+						console.error('Форма не валидна', loginForm.errors);
+					}
+				})
+		})();
+
+		(function () {
+			var app = angular.module('formApp', [])
+			app.controller('formController', function ($scope, $element) {
+
+				// console.log($element[0]);
+				this.form = new FormAPI($element[0], {
+					validation: validationRules
+				});
+
+				this.form
+					.on('valid', function (name, status, reason, field) {
+						$scope.$apply(function () {
+
+						})
+					})
+					.on('submit', () => {
+						console.log('Another form submit');
+					})
+			});
+		})();
+
+
 
 	</script>
 </body>
