@@ -3565,7 +3565,7 @@ var ClientFormAPI = function (_FormAPI) {
 	}, {
 		key: 'reset',
 		value: function reset() {
-			this.errrors = null;
+			this[_FormAPI2.privates].errors = null;
 			this.form.reset();
 			this[_FormAPI2.privates].pristine = true;
 			this.emit('reset');

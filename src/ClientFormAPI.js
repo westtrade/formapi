@@ -177,7 +177,7 @@ export default class ClientFormAPI extends FormAPI {
 	}
 
 	reset() {
-		this.errrors = null;
+		this[privates].errors = null;
 		this.form.reset();
 		this[privates].pristine = true;
 		this.emit('reset');
