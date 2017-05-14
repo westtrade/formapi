@@ -3964,8 +3964,8 @@ var FormAPI = function (_EventEmmiter) {
 		key: 'errorList',
 		get: function get() {
 			return (0, _values2.default)(this.errors || {}).reduce(function (result, item) {
-				if (Array.isArray(items)) {
-					return result.concat(items);
+				if (Array.isArray(item)) {
+					return result.concat(item);
 				}
 				result.push(item);
 				return result;
