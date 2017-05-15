@@ -3580,7 +3580,7 @@ var ClientFormAPI = function (_FormAPI) {
 				return this.form.elements[fieldName];
 			}
 
-			var field = this.form[name];
+			var field = this.form.elements[name];
 			field.value = value;
 
 			if (!eventType) {
@@ -4044,7 +4044,11 @@ var FormAPI = function (_EventEmmiter) {
 			    customErrors = _privates.customErrors;
 
 
-			return this[privates].errors;
+			if (!errors && !customErrors) {
+				return null;
+			}
+
+			return (0, _assign2.default)({}, errors || {}, customErrors || {});
 		}
 	}, {
 		key: 'customErrors',
