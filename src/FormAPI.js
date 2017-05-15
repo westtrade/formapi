@@ -146,7 +146,7 @@ export default class FormAPI extends EventEmmiter2 {
 
 	set data(data = {}) {
 		assert(typeof data === 'object', 'Data must be an object');
-		Object.entries(data).forEacn((name, value) => {
+		Object.entries(data).forEach((name, value) => {
 			this.setField(name, value);
 		});
 	}
