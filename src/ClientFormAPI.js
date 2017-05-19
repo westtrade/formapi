@@ -137,7 +137,7 @@ export default class ClientFormAPI extends FormAPI {
 			return this.form.elements[fieldName];
 		}
 
-		const field = this.form.elements[name];
+		const field = this.form.elements[fieldName];
 		field.value = value;
 
 		if (!eventType) {
