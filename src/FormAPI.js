@@ -129,7 +129,7 @@ export default class FormAPI extends EventEmmiter2 {
 	value(name, value) {
 		assert(typeof name === 'string' && name.length, 'Argument name is required and must be a string');
 		if (value) {
-			return this.setField(name, value);
+			return this.field(name, value);
 		}
 
 		return this.data[name];
@@ -146,8 +146,8 @@ export default class FormAPI extends EventEmmiter2 {
 
 	set data(data = {}) {
 		assert(typeof data === 'object', 'Data must be an object');
-		Object.entries(data).forEacn((name, value) => {
-			this.setField(name, value);
+		Object.entries(data).forEach((name, value) => {
+			this.field(name, value);
 		});
 	}
 
