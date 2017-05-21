@@ -94,6 +94,22 @@ export default class ClientFormAPI extends FormAPI {
 			this.emit('submit', event);
 			return false;
 		});
+		
+		this.form.addEventListener('click', async(event) => {
+			let target = event.target;
+			if (target.tagName.toLowerCase() === 'label') {
+				target = this.form.elements[htmlFor];
+			}
+			if (target.type === 'checkbox') {
+				this.emit('change', event);
+				this.emit(`change.${target.name}`, event);
+				if (this.isPristine) {
+					setPristine(false);
+				}
+				await this.verifyField(target.name);
+				return;
+			}
+		}, true);
 	}
 
 	get isPristine() {
