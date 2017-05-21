@@ -96,22 +96,21 @@ export default class ClientFormAPI extends FormAPI {
 		});
 
 		this.form.addEventListener('click', async(event) => {
-			// console.log(event);
 			let target = event.target;
 			if (target.tagName.toLowerCase() === 'label') {
-				target = this.form.elements[target.htmlFor];
+				target = this.form.elements[target.htmlFor] || target;
 			}
-			setTimeout(async () => {
-				if (target.type === 'checkbox') {
-					this.emit('change', event);
-					this.emit(`change.${target.name}`, event);
-					if (this.isPristine) {
-						setPristine(false);
-					}
-					await this.verifyField(target.name);
-					return;
-				}
-			}, 0);
+			if (target.type === 'checkbox') {
+				setTimeout(async () => {
+						this.emit('change', event);
+						this.emit(`change.${target.name}`, event);
+						if (this.isPristine) {
+							setPristine(false);
+						}
+						await this.verifyField(target.name);
+						return;
+				}, 0);
+			}
 		}, true);
 	}
 
