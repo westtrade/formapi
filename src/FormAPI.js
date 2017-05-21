@@ -81,9 +81,10 @@ export default class FormAPI extends EventEmmiter2 {
 
 		if (errors instanceof Error) {
 			this.setCustomErrors([errors], true);
+			errors = null;
 		}
 
-		errors = null;
+		
 
 		const {customErrors} = this[privates];
 		if (!errors && !customErrors) {
