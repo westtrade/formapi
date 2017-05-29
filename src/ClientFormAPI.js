@@ -157,6 +157,25 @@ export default class ClientFormAPI extends FormAPI {
 			]
 		})
 	}
+	
+	files(fieldName) {
+		const fileList = [];
+		const field = this.field(fieldName);
+		if (!field) {
+			return fileList;
+		}
+		const fileListExists = 'files' in field;
+		if (!fileListExists) {
+			return fileList;	
+		}
+		
+		let count = field.files.length;
+		while (count--) {
+			fileList.push(field.files[count]);
+		}
+		
+		return fileList.reverse();
+	}
 
 	field(fieldName, value, eventType) {
 		if (typeof value === 'undefined') {
