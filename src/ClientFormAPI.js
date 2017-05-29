@@ -64,6 +64,10 @@ export default class ClientFormAPI extends FormAPI {
 			}
 			this.emit('input', event);
 			this.emit(`input.${event.target.name}`, event);
+			const {name} = event.target;
+			if (!name || !name.length) {
+				return ;
+			}
 			await this.verifyField(event.target.name, this.options);
 		}, true);
 
@@ -77,6 +81,10 @@ export default class ClientFormAPI extends FormAPI {
 			this.emit(`change.${event.target.name}`, event);
 			if (this.isPristine) {
 				setPristine(false);
+			}
+			const {name} = event.target;
+			if (!name || !name.length) {
+				return ;
 			}
 			await this.verifyField(event.target.name);
 		}, true);
