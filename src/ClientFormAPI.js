@@ -53,20 +53,18 @@ export default class ClientFormAPI extends FormAPI {
 		this.action = action;
 		this.method = method;
 
-		let setPristine = (status) => {
+		const setPristine = (status) => {
 			this[privates].pristine = status;
 			this.emit('dirty', status);
 		};
-
-		let setPending = (status) => {
+		const setPending = (status) => {
 			this[privates].pending = status;
 			this.emit('pending', status);
 		};
 
 		this.form.addEventListener('input', async (event) => {
-			if (this.isPristine && !this.isPending) {
-				this[privates].pristine = false;
-				this[privates].pending = true;
+			if (this.isPristine) {
+				setPristine(false);
 			}
 			this.emit('input', event);
 			this.emit(`input.${event.target.name}`, event);
@@ -85,9 +83,8 @@ export default class ClientFormAPI extends FormAPI {
 		this.form.addEventListener('change', async (event) => {
 			this.emit('change', event);
 			this.emit(`change.${event.target.name}`, event);
-			if (this.isPristine && !this.isPending) {
-				this[privates].pristine = false;
-				this[privates].pending = true;
+			if (this.isPristine) {
+				setPristine(false);
 			}
 			const {name} = event.target;
 			if (!name || !name.length) {
@@ -97,28 +94,26 @@ export default class ClientFormAPI extends FormAPI {
 		}, true);
 
 		this.form.addEventListener('submit', async (event) => {
-			if (this.isPristine && !this.isPending) {
-				this[privates].pristine = false;
-				this[privates].pending = true;
+			if (this.isPristine) {
+				setPristine(false);
 			}
-			return new Promise((resolve, reject) => {
-				const valid = await this.verify();
-
+			function submitFunction() => {
+				setPending(true);
 				if (event) {
 					event.preventDefault();
-					this.emit('submit');
-					resolve('resolved');
 				}
-				else if (!valid) {
-					this.emit('error', this.errors);
-					reject('rejected');
-				}
-			}).then(() => {
-				// when condition is ok
-			},/* when it's not ok */);
+				this.emit('submit', event);
+				return false;
+			};
 
-			// pending status is removed
-			this[privates].pending = false;
+				try {
+					let submit = await submitFunction();
+					return submit;
+					setPending(false);
+				} catch {
+					throw new Error();
+					setPending(false);
+				};
 		});
 
 		this.form.addEventListener('click', async(event) => {
@@ -130,9 +125,8 @@ export default class ClientFormAPI extends FormAPI {
 				setTimeout(async () => {
 						this.emit('change', event);
 						this.emit(`change.${target.name}`, event);
-						if (this.isPristine && !this.isPending) {
-							this[privates].pristine = false;
-							this[privates].pending = true;
+						if (this.isPristine) {
+							setPristine(false);
 						}
 						await this.verifyField(target.name);
 						return;
@@ -141,15 +135,16 @@ export default class ClientFormAPI extends FormAPI {
 		}, true);
 
 		this.form.addEventListener('reset', async(event) => {
-			if (!this.isPristine && this.isPending) {
-          this[privates].pristine = true;
-          this[privates].pending = false;
+			if (!this.isPristine) {
+          setPristine(true);
         }
+				setPending(false);
+				this[privates].errors = null;
+				this.resetCustomErrors();
 		}, true);
 
 		document.addEventListener('DOMContentLoaded', async(event) => {
-			this[privates].pristine = true;
-			this[privates].pending = false;
+			setPristine(true);
 		}, true);
 	}
 
@@ -159,10 +154,6 @@ export default class ClientFormAPI extends FormAPI {
 
 	get isDirty() {
 		return !this[privates].pristine;
-	}
-
-	get isPending() {
-		return this[privates].pending;
 	}
 
 	get data() {
