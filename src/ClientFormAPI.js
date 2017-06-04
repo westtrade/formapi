@@ -97,23 +97,35 @@ export default class ClientFormAPI extends FormAPI {
 			if (this.isPristine) {
 				setPristine(false);
 			}
-			function submitFunction() => {
 				setPending(true);
 				if (event) {
 					event.preventDefault();
 				}
-				this.emit('submit', event);
-				return false;
-			};
 
-				try {
-					let submit = await submitFunction();
-					return submit;
-					setPending(false);
-				} catch {
-					throw new Error();
-					setPending(false);
+			return new Promise((resolve, reject) => {
+				let xhr = new XMLHttpRequest();
+				xhr.open(this.method, this.action, true);
+				xhr.onload = function() {
+					if (this.status == 200) {
+						resolve(this.response);
+						setPending(false);
+					} else {
+						let error = new Error(this.statusText);
+						error.code = this.status;
+						reject(error);
+						setPending(false);
+					}
 				};
+
+				xhr.onerror = () => {
+					reject(new Error('Network Error'));
+				};
+
+				xhr.send();
+			}).then(
+				response => console.log(`OK. Form with ID ${formElement} successfully sended. ${response}`),
+				error => console.log(`ERROR — ${error}`);
+			);
 		});
 
 		this.form.addEventListener('click', async(event) => {
@@ -139,8 +151,6 @@ export default class ClientFormAPI extends FormAPI {
           setPristine(true);
         }
 				setPending(false);
-				this[privates].errors = null;
-				this.resetCustomErrors();
 		}, true);
 
 		document.addEventListener('DOMContentLoaded', async(event) => {
