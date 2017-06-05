@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-	  "form"
+    "form"
   ],
   "author": "Popov Gennadiy <commerce@westtrade.tk> (http://westtrade.tk/)",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "webpack": "^2.4.1"
   },
   "dependencies": {
+    "eslint": "^3.19.0",
     "eventemitter2": "^4.1.0",
     "qs": "^6.4.0",
     "validate.js": "^0.11.1"

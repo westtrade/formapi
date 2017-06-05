@@ -34,6 +34,7 @@ export default class FormAPI extends EventEmmiter2 {
 			errors: null,
 			pristine: true,
 			customErrors: null,
+            pending: false;
 			// initial: this.data,
 		};
 
@@ -137,7 +138,7 @@ export default class FormAPI extends EventEmmiter2 {
 	get data() {
 
 	}
-
+    
 	value(name, value) {
 		assert(typeof name === 'string' && name.length, 'Argument name is required and must be a string');
 		if (value) {

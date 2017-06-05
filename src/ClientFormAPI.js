@@ -97,10 +97,11 @@ export default class ClientFormAPI extends FormAPI {
 			if (this.isPristine) {
 				setPristine(false);
 			}
-				setPending(true);
+				const valid = await this.verify();
 				if (event) {
 					event.preventDefault();
 				}
+				setPending(true);
 
 			return new Promise((resolve, reject) => {
 				let xhr = new XMLHttpRequest();
@@ -109,11 +110,15 @@ export default class ClientFormAPI extends FormAPI {
 					if (this.status == 200) {
 						resolve(this.response);
 						setPending(false);
+            this.emit('submit', event);
 					} else {
 						let error = new Error(this.statusText);
 						error.code = this.status;
 						reject(error);
 						setPending(false);
+					} else if (!valid) {
+						reject(error);
+						this.emit('error', this.errors);
 					}
 				};
 
@@ -150,7 +155,13 @@ export default class ClientFormAPI extends FormAPI {
 			if (!this.isPristine) {
           setPristine(true);
         }
-				setPending(false);
+            this[privates].errors = null;
+            this.form.reset();
+		    this[privates].pristine = true;
+            this[privates].pending = false;
+		    this.resetCustomErrors();
+            setPending(false);
+		    this.emit('reset');
 		}, true);
 
 		document.addEventListener('DOMContentLoaded', async(event) => {
@@ -251,14 +262,5 @@ export default class ClientFormAPI extends FormAPI {
 		}
 
 		return this;
-	}
-
-	reset() {
-		this[privates].errors = null;
-		this.form.reset();
-		this[privates].pristine = true;
-		this[privates].pending = false;
-		this.resetCustomErrors();
-		this.emit('reset');
 	}
 }
