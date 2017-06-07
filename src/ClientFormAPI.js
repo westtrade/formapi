@@ -190,7 +190,13 @@ export default class ClientFormAPI extends FormAPI {
 		}
 
 		const field = this.form.elements[fieldName];
-		field.value = value;
+		if (field.type === 'checkbox') {
+			field.checked = !!value;
+		} else {
+			field.value = value;
+		}
+		
+		
 
 		if (!eventType) {
 			let inputEvent = new Event('input');
