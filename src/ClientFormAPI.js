@@ -48,11 +48,6 @@ export default class ClientFormAPI extends FormAPI {
 		}
 
 		assert(this.form, `Form with id ${formElement} is not defined`);
-		const {action, method} = this.form;
-
-		this.action = action;
-		this.method = method;
-
 		const setPristine = (status) => {
 			this[privates].pristine = status;
 			this.emit('dirty', status);
@@ -141,6 +136,18 @@ export default class ClientFormAPI extends FormAPI {
 
 	get element() {
 		return this.form;
+	}
+	
+	get url() {
+		return this.form.method;
+	}
+	
+	get method() {
+		return this.form.method;
+	}
+	
+	get action() {
+		return this.form.action || 'GET';
 	}
 
 	get elements() {
