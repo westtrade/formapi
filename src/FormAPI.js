@@ -26,7 +26,7 @@ export default class FormAPI extends EventEmmiter2 {
 			wildcard: true,
 		});
 
-		const {options: validatorOptions = {}, validation = {}} = options;
+		const {options: validatorOptions = {}, validation = {}, enctype} = options;
 		this.options = validatorOptions;
 		this.validation = validation;
 
@@ -34,6 +34,7 @@ export default class FormAPI extends EventEmmiter2 {
 			errors: null,
 			pristine: true,
 			customErrors: null,
+			enctype,
 			// initial: this.data,
 		};
 
@@ -84,7 +85,7 @@ export default class FormAPI extends EventEmmiter2 {
 			errors = null;
 		}
 
-		
+
 
 		const {customErrors} = this[privates];
 		if (!errors && !customErrors) {

@@ -42,16 +42,26 @@ function sendStatic(path, req, res) {
 		.pipe(res);
 }
 
+function verifyUser(req, res) {
+	res.write('azaza');
+	res.end('');
+}
+
 const server = http.createServer((request, response) => {
 	const {method, statusCode, statusMessage, url} = request;
 	const {path, query} = parseUrl(url);
 
+	const testRegexp = new RegExp('^[/]public[/]*');
+
 	switch (true) {
 	case '/' === path:
-		return indexPage(request, response)
+		return indexPage(request, response);
 
-	case /^\/public\/*/.test(path):
+	case testRegexp.test(path):
 		return sendStatic(path, request, response);
+
+	case '/verify_user' === path:
+		return (request, response);
 
 	default:
 		return notFound(request, response);
@@ -64,7 +74,7 @@ server.on('upgrade', (request, socket, head) => {
 
 
 	const buffer = socket.read();
-	console.log(buffer);
+	// console.log(buffer);
 
 	const secWebsocketKey = request.headers['sec-websocket-key'];
 	const concatConstant = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';

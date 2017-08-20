@@ -55,7 +55,7 @@
 			Login form
 		</span>
 
-		<form id="login-form" class="bg-aqua region" method="post" action="/verify_user">
+		<form id="login-form" enctype="text/plain" class="bg-aqua region" action="/verify_user">
 			<div class="messages"></div>
 			<input class="bg-white navy" type="text" name="login" placeholder="Login">
 			<input class="bg-white navy" type="password" name="password" placeholder="Password">
@@ -132,7 +132,8 @@
 
 		(function () {
 			var loginForm = new FormAPI('login-form', {
-				validation: validationRules
+				validation: validationRules,
+				submit: true,
 			});
 
 			var messages = loginForm.element.getElementsByClassName('messages')[0];
@@ -140,7 +141,7 @@
 			loginForm
 				.on('valid', function (name, status, reason, field) {
 					field.classList.toggle('has-error', !status);
-					loginForm.classList.toggle('has-error', loginForm.hasErrorsi);
+					loginForm.form.classList.toggle('has-error', loginForm.hasErrors);
 					messages.innerHTML = loginForm.hasErrors ? loginForm.errorList.join(', ') : '';
 
 					console.log(loginForm.errors, loginForm.errorList.join());
@@ -157,6 +158,14 @@
 						console.error('Форма не валидна', loginForm.errors);
 					}
 				})
+				.on('success', (data) => {
+					console.log('Success', data);
+
+				})
+				.on('error', (error) => {
+					console.log('Form error', error);
+
+				})
 		})();
 
 		(function () {
@@ -165,7 +174,8 @@
 
 				// console.log($element[0]);
 				this.form = new FormAPI($element[0], {
-					validation: validationRules
+					validation: validationRules,
+					submit: true,
 				});
 
 				this.form

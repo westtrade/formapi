@@ -2,6 +2,9 @@ import FormAPI from './FormAPI';
 import {privates, verifyMethod} from './FormAPI';
 import assert from 'assert';
 import validator from 'validate.js';
+import axios from 'axios';
+// import 'whatwg-fetch';
+import qs from 'qs';
 
 
 const getFormData = (form) => {
@@ -94,6 +97,71 @@ export default class ClientFormAPI extends FormAPI {
 				event.preventDefault();
 			}
 
+			if (options.submit && valid) {
+
+				const axiosInstance = axios.create({
+					headers: {
+						// 'Content-Type': this.enctype,
+					}
+				});
+
+				const requestOptions = {
+					method: this.method,
+					url: this.url,
+				};
+
+				if (this.method === 'get') {
+					requestOptions['params'] = this.data;
+				} else {
+					switch (this.enctype) {
+						case 'application/json':
+							requestOptions.data = JSON.stringify(this.data);
+							break;
+						case 'application/x-www-form-urlencoded':
+							requestOptions.data = this.toString();
+							break;
+					}
+				}
+
+
+				axiosInstance
+					.request(requestOptions)
+					.then((result) => {
+						console.log(result);
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+
+				// axios({
+				// 	method: this.method,
+				// 	url: this.url,
+				// 	data: this.data,
+				// })
+				// .then((result) => {
+				// 	console.log(result);
+				// })
+				// .catch((error) => {
+				// 	console.log(error);
+				// })
+
+				// const fetchOptions = {
+				// 	method: this.method.toUpperCase(),
+				// 	headers: {
+				// 		'Content-Type': this.enctype,
+				// 	},
+				// };
+				//
+
+				// global.fetch(this.action, fetchOptions).then((result) => {
+				// 	this.emit('success', result);
+				// }).catch((error) => {
+				// 	this.emit('error', error);
+				// });
+
+				return
+			}
+
 			this.emit('submit', event);
 			return false;
 		});
@@ -137,17 +205,21 @@ export default class ClientFormAPI extends FormAPI {
 	get element() {
 		return this.form;
 	}
-	
+
 	get url() {
-		return this.form.method;
+		return this.form.action;
 	}
-	
+
 	get method() {
-		return this.form.method;
+		return this.form.method || 'GET';
 	}
-	
+
 	get action() {
-		return this.form.action || 'GET';
+		return this.form.action;
+	}
+
+	get enctype() {
+		return this[privates].enctype || this.form.enctype;
 	}
 
 	get elements() {
@@ -164,7 +236,7 @@ export default class ClientFormAPI extends FormAPI {
 			]
 		})
 	}
-	
+
 	files(fieldName) {
 		const fileList = [];
 		const field = this.field(fieldName);
@@ -173,14 +245,14 @@ export default class ClientFormAPI extends FormAPI {
 		}
 		const fileListExists = 'files' in field;
 		if (!fileListExists) {
-			return fileList;	
+			return fileList;
 		}
-		
+
 		let count = field.files.length;
 		while (count--) {
 			fileList.push(field.files[count]);
 		}
-		
+
 		return fileList.reverse();
 	}
 
@@ -195,8 +267,8 @@ export default class ClientFormAPI extends FormAPI {
 		} else {
 			field.value = value;
 		}
-		
-		
+
+
 
 		if (!eventType) {
 			let inputEvent = new Event('input');

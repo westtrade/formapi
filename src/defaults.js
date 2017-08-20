@@ -7,4 +7,5 @@
 export default {
 	selectOnFocus: false,
 	validateOnInput: false,
+	submit: true,
 };
