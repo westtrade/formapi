@@ -1,5 +1,5 @@
 import EventEmmiter2 from 'eventemitter2';
-import assert from 'assert';
+// import assert from 'assert';
 import validator from 'validate.js';
 import qs from 'qs';
 
@@ -38,13 +38,13 @@ export default class FormAPI extends EventEmmiter2 {
 			// initial: this.data,
 		};
 
-		this.on('error', () => {});
+		// this.on('error', () => {});
 	}
 
 	static define(type = '', name, resolver = () => {}) {
-		assert(typeof type === 'string' && type.length, 'Argument `type` is type of String and is required.');
-		assert(typeof name === 'string' && name.length, 'Argument `name` is type of String and is required.');
-		assert(ALLOWED_TYPES_OF_DEFINITIONS.indexOf(type) >= 0, `Argument \`type\` must be ${ALLOWED_TYPES_OF_DEFINITIONS.join(', ')}`);
+		// assert(typeof type === 'string' && type.length, 'Argument `type` is type of String and is required.');
+		// assert(typeof name === 'string' && name.length, 'Argument `name` is type of String and is required.');
+		// assert(ALLOWED_TYPES_OF_DEFINITIONS.indexOf(type) >= 0, `Argument \`type\` must be ${ALLOWED_TYPES_OF_DEFINITIONS.join(', ')}`);
 
 		if (type === 'formatter') {
 			validator.validators[name] = resolver;
@@ -84,8 +84,6 @@ export default class FormAPI extends EventEmmiter2 {
 			this.setCustomErrors([errors], true);
 			errors = null;
 		}
-
-
 
 		const {customErrors} = this[privates];
 		if (!errors && !customErrors) {
@@ -140,7 +138,7 @@ export default class FormAPI extends EventEmmiter2 {
 	}
 
 	value(name, value) {
-		assert(typeof name === 'string' && name.length, 'Argument name is required and must be a string');
+		// assert(typeof name === 'string' && name.length, 'Argument name is required and must be a string');
 		if (value) {
 			return this.field(name, value);
 		}
@@ -158,7 +156,7 @@ export default class FormAPI extends EventEmmiter2 {
 	}
 
 	set data(data = {}) {
-		assert(typeof data === 'object', 'Data must be an object');
+		// assert(typeof data === 'object', 'Data must be an object');
 		Object.entries(data).forEach((name, value) => {
 			this.field(name, value);
 		});
@@ -177,7 +175,7 @@ export default class FormAPI extends EventEmmiter2 {
 	}
 
 	async verifyField(name, options) {
-		assert(typeof name === 'string' && name.length, `Argument name is required and must be a string`);
+		// assert(typeof name === 'string' && name.length, `Argument name is required and must be a string`);
 		const fieldRule = this.getRule(name);
 
 		if (!fieldRule) {

@@ -1,4 +1,21 @@
 const {resolve} = require('path');
+// const PrepackWebpackPlugin = require('prepack-webpack-plugin').default;
+//
+// const prepackConfiguration = {
+// 	mathRandomSeed: true,
+// };
+
+const webpack = require('webpack');
+
+const uglifyJSOptions = {
+	compress: {
+		warnings: false,
+	},
+
+	sourceMap: false,
+
+	extractComments: true,
+};
 
 module.exports = {
 
@@ -41,4 +58,8 @@ module.exports = {
 	devtool: 'source-map',
 	context: __dirname,
 	target: 'web',
+	plugins: [
+		// new PrepackWebpackPlugin(prepackConfiguration),
+		new webpack.optimize.UglifyJsPlugin(uglifyJSOptions),
+	]
 };

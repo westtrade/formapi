@@ -55,7 +55,7 @@
 			Login form
 		</span>
 
-		<form id="login-form" enctype="text/plain" class="bg-aqua region" action="/verify_user">
+		<form id="login-form" method="post" class="bg-aqua region" action="/verify_user/azazaza">
 			<div class="messages"></div>
 			<input class="bg-white navy" type="text" name="login" placeholder="Login">
 			<input class="bg-white navy" type="password" name="password" placeholder="Password">
@@ -132,19 +132,33 @@
 
 		(function () {
 			var loginForm = new FormAPI('login-form', {
-				validation: validationRules,
-				submit: true,
+				// validation: validationRules,
+				// enctype: 'application/json',
 			});
 
 			var messages = loginForm.element.getElementsByClassName('messages')[0];
 
+			function showErrors() {
+				loginForm.form.classList.toggle('has-error', loginForm.hasErrors);
+				messages.innerHTML = loginForm.hasErrors ? loginForm.errorList.join(', ') : '';
+			}
+
+			function toggleFieldErrors() {
+				loginForm.elements.forEach(([element, name, errors]) => {
+					element.classList.toggle('has-error', !!errors);
+				})
+			}
+
 			loginForm
+				.on('error', function () {
+					showErrors();
+					if (loginForm.isPristine) {
+						toggleFieldErrors();
+					}
+				})
 				.on('valid', function (name, status, reason, field) {
 					field.classList.toggle('has-error', !status);
-					loginForm.form.classList.toggle('has-error', loginForm.hasErrors);
-					messages.innerHTML = loginForm.hasErrors ? loginForm.errorList.join(', ') : '';
-
-					console.log(loginForm.errors, loginForm.errorList.join());
+					showErrors();
 				})
 				.on('submit', () => {
 
@@ -175,7 +189,7 @@
 				// console.log($element[0]);
 				this.form = new FormAPI($element[0], {
 					validation: validationRules,
-					submit: true,
+					enctype: 'application/json',
 				});
 
 				this.form

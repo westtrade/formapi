@@ -1,0 +1,21 @@
+/*!
+ * validate.js 0.11.1
+ *
+ * (c) 2013-2016 Nicklas Ansman, 2013 Wrapp
+ * Validate.js may be freely distributed under the MIT license.
+ * For all details and documentation:
+ * http://validatejs.org/
+ */
+
+/**
+ * @file Default settings of FormAPI
+ * @author Popov Gennadiy <me@westtrade.tk>
+ * @license MIT
+ */
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */

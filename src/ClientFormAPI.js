@@ -1,6 +1,6 @@
 import FormAPI from './FormAPI';
 import {privates, verifyMethod} from './FormAPI';
-import assert from 'assert';
+// import assert from 'assert';
 import validator from 'validate.js';
 import axios from 'axios';
 // import 'whatwg-fetch';
@@ -46,11 +46,11 @@ export default class ClientFormAPI extends FormAPI {
 		if (formElement instanceof HTMLFormElement) {
 			this.form = formElement;
 		} else {
-			assert(typeof formElement === 'string' && formElement.length, 'Form formElement must be a string or HTMLFormElement');
+			// assert(typeof formElement === 'string' && formElement.length, 'Form formElement must be a string or HTMLFormElement');
 			this.form = document.forms[formElement];
 		}
 
-		assert(this.form, `Form with id ${formElement} is not defined`);
+		// assert(this.form, `Form with id ${formElement} is not defined`);
 		const setPristine = (status) => {
 			this[privates].pristine = status;
 			this.emit('dirty', status);
@@ -93,15 +93,12 @@ export default class ClientFormAPI extends FormAPI {
 				this.emit('error', this.errors);
 			}
 
-			if (event) {
-				event.preventDefault();
-			}
+			const makeAjaxSubmit = !(options.submit === false);
 
-			if (options.submit && valid) {
-
+			if (makeAjaxSubmit && valid) {
 				const axiosInstance = axios.create({
 					headers: {
-						// 'Content-Type': this.enctype,
+						'Content-Type': this.enctype,
 					}
 				});
 
@@ -123,43 +120,20 @@ export default class ClientFormAPI extends FormAPI {
 					}
 				}
 
-
 				axiosInstance
 					.request(requestOptions)
 					.then((result) => {
 						console.log(result);
 					})
 					.catch((error) => {
-						console.log(error);
-					})
+						this.setCustomErrors([
+							error.message
+						]);
+					});
+			}
 
-				// axios({
-				// 	method: this.method,
-				// 	url: this.url,
-				// 	data: this.data,
-				// })
-				// .then((result) => {
-				// 	console.log(result);
-				// })
-				// .catch((error) => {
-				// 	console.log(error);
-				// })
-
-				// const fetchOptions = {
-				// 	method: this.method.toUpperCase(),
-				// 	headers: {
-				// 		'Content-Type': this.enctype,
-				// 	},
-				// };
-				//
-
-				// global.fetch(this.action, fetchOptions).then((result) => {
-				// 	this.emit('success', result);
-				// }).catch((error) => {
-				// 	this.emit('error', error);
-				// });
-
-				return
+			if (event) {
+				event.preventDefault();
 			}
 
 			this.emit('submit', event);
