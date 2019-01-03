@@ -55,6 +55,10 @@ export default class ClientFormAPI extends FormAPI {
 			this[privates].pristine = status;
 			this.emit('dirty', status);
 		};
+		const setPending = (status) => {
+			this[privates].pending = status;
+			this.emit('pending', status);
+		};
 
 		this.form.addEventListener('input', async (event) => {
 			if (this.isPristine) {
@@ -135,9 +139,40 @@ export default class ClientFormAPI extends FormAPI {
 			if (event) {
 				event.preventDefault();
 			}
+				const valid = await this.verify();
+				if (event) {
+					event.preventDefault();
+				}
+				setPending(true);
 
-			this.emit('submit', event);
-			return false;
+			return new Promise((resolve, reject) => {
+				let xhr = new XMLHttpRequest();
+				xhr.open(this.method, this.action, true);
+				xhr.onload = function() {
+					if (this.status == 200) {
+						resolve(this.response);
+						setPending(false);
+            this.emit('submit', event);
+					} else {
+						let error = new Error(this.statusText);
+						error.code = this.status;
+						reject(error);
+						setPending(false);
+					} else if (!valid) {
+						reject(error);
+						this.emit('error', this.errors);
+					}
+				};
+
+				xhr.onerror = () => {
+					reject(new Error('Network Error'));
+				};
+
+				xhr.send();
+			}).then(
+				response => console.log(`OK. Form with ID ${formElement} successfully sended. ${response}`),
+				error => console.log(`ERROR — ${error}`);
+			);
 		});
 
 		this.form.addEventListener('click', async(event) => {
@@ -156,6 +191,23 @@ export default class ClientFormAPI extends FormAPI {
 						return;
 				}, 0);
 			}
+		}, true);
+
+		this.form.addEventListener('reset', async(event) => {
+			if (!this.isPristine) {
+          setPristine(true);
+        }
+            this[privates].errors = null;
+            this.form.reset();
+		    this[privates].pristine = true;
+            this[privates].pending = false;
+		    this.resetCustomErrors();
+            setPending(false);
+		    this.emit('reset');
+		}, true);
+
+		document.addEventListener('DOMContentLoaded', async(event) => {
+			setPristine(true);
 		}, true);
 	}
 
@@ -274,13 +326,5 @@ export default class ClientFormAPI extends FormAPI {
 		}
 
 		return this;
-	}
-
-	reset() {
-		this[privates].errors = null;
-		this.form.reset();
-		this[privates].pristine = true;
-		this.resetCustomErrors();
-		this.emit('reset');
 	}
 }
