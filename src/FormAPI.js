@@ -21,10 +21,15 @@ export default class FormAPI extends EventEmmiter2 {
 	 * @type {String} Form id
 	 * @type {Object} Form options
 	 */
+
 	constructor(id, options = {}) {
 		super({
 			wildcard: true,
 		});
+
+		if (!FormAPI.instance) {
+			FormAPI.instance = this;
+		};
 
 		const {options: validatorOptions = {}, validation = {}, enctype} = options;
 		this.options = validatorOptions;
@@ -39,6 +44,7 @@ export default class FormAPI extends EventEmmiter2 {
 		};
 
 		// this.on('error', () => {});
+		return FormAPI.instance;
 	}
 
 	static define(type = '', name, resolver = () => {}) {
